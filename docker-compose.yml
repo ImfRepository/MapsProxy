@@ -10,31 +10,29 @@ services:
     ports:
       - "5000:8080"
       - "5001:8081"
-    depends_on:
-      - redis-server
     env_file:
       - path: ./default.env
         required: true
 
-  redis-server:
-    container_name: redis-server
-    image: redis:latest
-    restart: always
-    ports:
-      - "6379:6379"
-    env_file:
-      - path: ./default.env
-        required: true
+  # redis-server:
+  #   container_name: redis-server
+  #   image: redis:latest
+  #   restart: always
+  #   ports:
+  #     - "6379:6379"
+  #   env_file:
+  #     - path: ./default.env
+  #       required: true
 
-  redis-commander:
-    container_name: redis-commander
-    image: rediscommander/redis-commander:latest
-    restart: always
-    ports:
-      - "6001:8081"
-    env_file:
-      - path: ./default.env
-        required: true
+  # redis-commander:
+  #   container_name: redis-commander
+  #   image: rediscommander/redis-commander:latest
+  #   restart: always
+  #   ports:
+  #     - "6001:8081"
+  #   env_file:
+  #     - path: ./default.env
+  #       required: true
         
   postgres-server:
     container_name: postgres-server
