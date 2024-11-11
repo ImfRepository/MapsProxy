@@ -1,8 +1,11 @@
 using MapsProxyApi.Data;
+using MapsProxyApi.Domain.Dtos;
 using MapsProxyApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Caching.Memory;
 using System.IO.Compression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -80,13 +83,20 @@ app.MapGet("/api/proxy/testservices/{serviceName}/{*path}",
 
 app.MapGet("/api/stats",
     async ([FromServices] AppDbContext context,
-    string token = "8c039db1-39e5-45ec-a2a7-c6ded5d61487") =>
+    [FromServices] IMemoryCache cache,
+    string token = "8c039db1-39e5-45ec-a2a7-c6ded5d61487",
+    string service = "A06_ATE_TE_WGS84") =>
 {
     var result = await context.UsageLimits
         .Include(x => x.User)
         .Include(x => x.Service)
         .Where(x => x.User.Token == token)
-        .ToListAsync();
+        .Where(x => x.Service.Name == service)
+        .FirstOrDefaultAsync();
+
+    var key = $"{token} limits for service {service}";
+    if (cache.TryGetValue(key, out CachedLimitDto limit))
+        result.UsedTimes = limit.UsedTimes;
 
     return result;
 })
