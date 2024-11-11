@@ -1,12 +1,11 @@
 ﻿using MapsProxyApi.Data;
-using MapsProxyApi.Dtos;
-using Microsoft.EntityFrameworkCore;
+using MapsProxyApi.Domain.Dtos;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 
 namespace MapsProxyApi.Services
 {
-    public class ProxyTestsService
+    public class ProxyTestsService : IProxyService
     {
         private readonly IDistributedCache _cache;
         private readonly object _lock = new object();
@@ -25,7 +24,7 @@ namespace MapsProxyApi.Services
         public async Task<string> Proxy(string token, string service, string path, string query)
         {
             if (!TryIncCounter(token, service))
-                throw new InvalidOperationException($"Reached uses limit for token {token}.");
+                return $"{token} reached uses limit for token {service}.";
 
             query = RemoveTokenFrom(query);
 
@@ -58,6 +57,9 @@ namespace MapsProxyApi.Services
                         .Where(x => x.User.Token == token)
                         .Where(x => x.Service.Name == serviceName)
                         .FirstOrDefault();
+
+                    if (entity == null)
+                        return false;
 
                     var dto = new CachedLimitDto
                     {

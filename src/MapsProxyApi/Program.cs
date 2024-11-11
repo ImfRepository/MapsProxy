@@ -6,9 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.IO.Compression;
 
 var builder = WebApplication.CreateBuilder(args);
-
 var services = builder.Services;
-
 var config = builder.Configuration;
 
 services.AddCors(options =>
@@ -21,32 +19,41 @@ services.AddCors(options =>
     });
 });
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 services.AddResponseCompression(opt =>
 {
     opt.EnableForHttps = true;
     opt.Providers.Add<GzipCompressionProvider>();
 });
-
 builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 {
     options.Level = CompressionLevel.Optimal;
 });
 
-//services.AddDistributedMemoryCache();
-
+services.AddMemoryCache();
 services.AddStackExchangeRedisCache(opt =>
 {
     opt.Configuration = config["REDIS_CONNECTION_STRING"];
     opt.InstanceName = "local";
 });
 
-services.AddTransient<ProxyTestsService>();
+services.AddSingleton<IProxyService, ProxyWithMemCacheService>();
 
-services.AddDbContext<DbContext, AppDbContext>(opt =>
-    opt.UseNpgsql(config["POSTGRES_CONNECTION_STRING"])
-    .EnableSensitiveDataLogging());
+services.AddDbContextFactory<AppDbContext>(opt =>
+    opt.UseNpgsql(config["POSTGRES_CONNECTION_STRING"]));
+services.AddDbContext<AppDbContext>(opt =>
+    opt.UseNpgsql(config["POSTGRES_CONNECTION_STRING"]));
+
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 
@@ -55,7 +62,7 @@ app.UseCors("allowFront");
 app.UseResponseCompression();
 
 app.MapGet("/api/proxy/testservices/{serviceName}/{*path}", 
-    async ([FromServices] ProxyTestsService service, 
+    async ([FromServices] IProxyService service, 
     string serviceName, 
     string path, 
     string token, // From query
@@ -67,7 +74,23 @@ app.MapGet("/api/proxy/testservices/{serviceName}/{*path}",
 
     context.Response.ContentType = "application/json";
     return response;
-});
+})
+.WithName("Proxy")
+.WithOpenApi(); ;
 
+app.MapGet("/api/stats",
+    async ([FromServices] AppDbContext context,
+    string token = "8c039db1-39e5-45ec-a2a7-c6ded5d61487") =>
+{
+    var result = await context.UsageLimits
+        .Include(x => x.User)
+        .Include(x => x.Service)
+        .Where(x => x.User.Token == token)
+        .ToListAsync();
+
+    return result;
+})
+.WithName("stats")
+.WithOpenApi(); ;
 
 app.Run();
