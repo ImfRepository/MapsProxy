@@ -1,4 +1,4 @@
-﻿namespace MapsProxyApi.Entities
+﻿namespace MapsProxyApi.Domain.Entities
 {
     public class ServiceUsageLimitEntity : BaseEntity
     {

@@ -1,4 +1,4 @@
-﻿namespace MapsProxyApi.Dtos
+﻿namespace MapsProxyApi.Domain.Dtos
 {
     public class CachedLimitDto
     {
