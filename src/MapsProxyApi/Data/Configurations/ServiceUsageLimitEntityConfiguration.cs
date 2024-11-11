@@ -1,4 +1,4 @@
-﻿using MapsProxyApi.Entities;
+﻿using MapsProxyApi.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,7 +9,7 @@ namespace MapsProxyApi.Data.Configurations
         public void Configure(EntityTypeBuilder<ServiceUsageLimitEntity> builder)
         {
             builder.HasOne(x => x.User)
-                .WithMany(x => x.UsageLimits)
+                .WithMany()
                 .HasForeignKey(x => x.UserId)
                 .IsRequired();
 

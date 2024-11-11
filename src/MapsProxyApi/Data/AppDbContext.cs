@@ -1,4 +1,4 @@
-﻿using MapsProxyApi.Entities;
+﻿using MapsProxyApi.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
