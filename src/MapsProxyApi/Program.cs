@@ -42,7 +42,9 @@ services.AddStackExchangeRedisCache(opt =>
     opt.InstanceName = "local";
 });
 
-services.AddSingleton<IProxyService, ProxyWithMemCacheService>();
+services.AddSingleton<CachedLimitDtoFactory>();
+services.AddSingleton<MemoryCacheService>();
+services.AddSingleton<IProxyService, ProxyServiceV1>();
 
 services.AddDbContextFactory<AppDbContext>(opt =>
     opt.UseNpgsql(config["POSTGRES_CONNECTION_STRING"]));
@@ -67,40 +69,36 @@ app.UseResponseCompression();
 app.MapGet("/api/proxy/testservices/{serviceName}/{*path}", 
     async ([FromServices] IProxyService service, 
     string serviceName, 
-    string path, 
-    string token, // From query
+    string path,
     HttpContext context) =>
 {
     var query = context.Request.QueryString.ToUriComponent();
 
-    var response = await service.Proxy(token, serviceName, path, query);
+    var response = await service.Proxy(serviceName, path, query);
 
     context.Response.ContentType = "application/json";
     return response;
 })
 .WithName("Proxy")
-.WithOpenApi(); ;
+.WithOpenApi();
 
 app.MapGet("/api/stats",
     async ([FromServices] AppDbContext context,
     [FromServices] IMemoryCache cache,
-    string token = "8c039db1-39e5-45ec-a2a7-c6ded5d61487",
     string service = "A06_ATE_TE_WGS84") =>
 {
     var result = await context.UsageLimits
-        .Include(x => x.User)
         .Include(x => x.Service)
-        .Where(x => x.User.Token == token)
         .Where(x => x.Service.Name == service)
         .FirstOrDefaultAsync();
 
-    var key = $"{token} limits for service {service}";
+    var key = $"{service}";
     if (cache.TryGetValue(key, out CachedLimitDto limit))
         result.UsedTimes = limit.UsedTimes;
 
     return result;
 })
 .WithName("stats")
-.WithOpenApi(); ;
+.WithOpenApi();
 
 app.Run();
