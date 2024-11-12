@@ -14,7 +14,7 @@
             _url = config["MAPS_URL"]!;
         }
 
-        public async Task<string> Proxy(string service, string path, string query)
+        public async Task<string> GetAsync(string service, string path, string query)
         {
             var url = $"{_url}{service}/{path}{query}";
 

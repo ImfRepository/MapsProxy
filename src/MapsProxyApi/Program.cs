@@ -67,14 +67,14 @@ app.UseCors("allowFront");
 app.UseResponseCompression();
 
 app.MapGet("/api/proxy/testservices/{serviceName}/{*path}", 
-    async ([FromServices] IProxyService service, 
+    async ([FromServices] IProxyService proxy, 
     string serviceName, 
     string path,
     HttpContext context) =>
 {
     var query = context.Request.QueryString.ToUriComponent();
 
-    var response = await service.Proxy(serviceName, path, query);
+    var response = await proxy.GetAsync(serviceName, path, query);
 
     context.Response.ContentType = "application/json";
     return response;
