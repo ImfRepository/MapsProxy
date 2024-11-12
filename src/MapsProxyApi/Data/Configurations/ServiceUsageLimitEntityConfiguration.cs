@@ -8,11 +8,6 @@ namespace MapsProxyApi.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<ServiceUsageLimitEntity> builder)
         {
-            builder.HasOne(x => x.User)
-                .WithMany()
-                .HasForeignKey(x => x.UserId)
-                .IsRequired();
-
             builder.HasOne(x => x.Service)
                 .WithMany()
                 .HasForeignKey(x => x.ServiceId)

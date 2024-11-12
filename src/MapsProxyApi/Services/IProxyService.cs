@@ -2,6 +2,6 @@
 {
     public interface IProxyService
     {
-        public Task<string> Proxy(string token, string service, string path, string query);
+        public Task<string> Proxy(string service, string path, string query);
     }
 }
