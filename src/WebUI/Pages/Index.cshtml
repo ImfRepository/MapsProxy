@@ -1,0 +1,33 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    ServiceName
+                </th>
+                <th>
+                    Requests
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var service in Model._services)
+        {
+            <tr>
+                <td>@service.Name</td>
+                <td>@service.UsedTimes/@service.MaxUses</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <form method="post">
+        <button type="submit">Reset</button>
+    </form>
+</div>
