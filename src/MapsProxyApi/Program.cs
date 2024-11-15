@@ -14,8 +14,9 @@ services.AddCors(options =>
 {
     options.AddPolicy("allowFront", policy =>
     {
-        policy.WithOrigins("http://localhost:3000");
-        policy.WithOrigins("http://maps-stats-ui:8080");
+        policy.AllowAnyOrigin();
+        //policy.WithOrigins("http://localhost:3000");
+        //policy.WithOrigins("http://maps-stats-ui:8080");
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
     });
