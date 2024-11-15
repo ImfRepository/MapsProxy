@@ -20,15 +20,20 @@ namespace MapsProxyApi.Services
         {
             var url = $"{_url}{serviceName}/{path}{query}";
 
-            var getDataTask = _client.GetStringAsync(url);
-            var incCounterTask = _recordingService.TryRecordTheRequestTo(serviceName);
+            if (await _recordingService.TryRecordTheRequestTo(serviceName))
+                return await _client.GetStringAsync(url);
 
-            await Task.WhenAll(incCounterTask, getDataTask);
+            return $"{serviceName} reached request limit.";
 
-            if (!incCounterTask.Result)
-                return $"{serviceName} reached request limit.";
+            //var getDataTask = _client.GetStringAsync(url);
+            //var incCounterTask = _recordingService.TryRecordTheRequestTo(serviceName);
 
-            return getDataTask.Result;
+            //await Task.WhenAll(incCounterTask, getDataTask);
+
+            //if (!incCounterTask.Result)
+            //    return $"{serviceName} reached request limit.";
+
+            //return getDataTask.Result;
         }
     }
 }
