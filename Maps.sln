@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapsProxyApi", "src\MapsProxyApi\MapsProxyApi.csproj", "{C7DB513E-7CF3-4B0B-83C2-5D497F5F85DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapsProxyApi", "src\MapsProxyApi\MapsProxyApi.csproj", "{C7DB513E-7CF3-4B0B-83C2-5D497F5F85DE}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{24623F1F-9BA9-46AC-930D-D8DB0AD8667B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI", "src\WebUI\WebUI.csproj", "{8B9C93EA-1989-4A5E-8E7F-800B95D08CFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{24623F1F-9BA9-46AC-930D-D8DB0AD8667B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24623F1F-9BA9-46AC-930D-D8DB0AD8667B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24623F1F-9BA9-46AC-930D-D8DB0AD8667B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B9C93EA-1989-4A5E-8E7F-800B95D08CFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B9C93EA-1989-4A5E-8E7F-800B95D08CFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B9C93EA-1989-4A5E-8E7F-800B95D08CFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B9C93EA-1989-4A5E-8E7F-800B95D08CFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
