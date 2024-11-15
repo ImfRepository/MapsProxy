@@ -58,6 +58,9 @@ namespace WebUI.Pages
                 var url = $"http://maps-proxy-api:8080/api/stats/{service.Name}";
                 var notUsed = await HttpClient.GetFromJsonAsync<int>(url);
                 service.UsedTimes -= notUsed;
+
+                if (service.UsedTimes < 0)
+                    service.UsedTimes = 0;
             }
         }
     }
