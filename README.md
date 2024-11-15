@@ -4,30 +4,15 @@ ProxyAPI count requests, limit amount of over all amount of requests send by use
 # Installation
 1. ```git clone https://github.com/ImfRepository/MapsProxy.git```
 2. `cd MapsProxy`
-3. add default.env
-4. ```docker-compose up```
+3. ```docker-compose up```
+4. change urls in client's file ```src\ArcGIS-Components\MapLayers.jsx```
+    1. old one ```https://portaltest.gismap.by/arcservertest/rest/services/...```
+    2. new one ```https://localhost:5001/api/Proxy/testservices/...```
+  
+# Endpoints
+- localhost:5011 - (UI) Service requests statistics and reset button
+- localhost:5001/api/Proxy/testservices/{service}/... - (API) Proxy
+- localhost:5001/api/stats/{service} - (API) Collecting unused requests for {service} from app
 
-default.env file expects following format:
-```
-# ASP.Net Proxy API
-POSTGRES_CONNECTION_STRING: Host=postgres-server;Port=5432;Database=postgres;Username=<USER>;Password=<PASSWORD>
-REDIS_CONNECTION_STRING: redis-server:6379
-MAPS_URL: https://<HOST>/arcservertest/rest/services/
-
-# Redis
-REDIS_PASSWORD=<PASSWORD>
-REDIS_USER=<USER>
-REDIS_USER_PASSWORD=<PASSWORD>
-
-# Redis Commander
-REDIS_HOSTS=redis-server:6379
-
-# PostgreSQL
-POSTGRES_USER: <USER>
-POSTGRES_PASSWORD: <PASSWORD>
-
-# pgAdmin
-PGADMIN_DEFAULT_EMAIL: <EMAIL>
-PGADMIN_DEFAULT_PASSWORD: <PASSWORD>
-PGADMIN_LISTEN_PORT: <PORT>
-```
+# SSL SERT
+- App uses sertificate from ```https/aspnetapp.pfx```.
