@@ -30,7 +30,7 @@ namespace MapsProxyApi.Services
             var serviceNames = (await _bookingService.GetAllServiceNames()).ToArray();
             Parallel.For(0, serviceNames.Length, async (int i) =>
             {
-                if (0 < await _limitingService.GetAvailableRequestsTo(serviceNames[i]))
+                if (0 >= await _limitingService.GetAvailableRequestsTo(serviceNames[i]))
                 {
                     await _limitingService.TryBookRequestsFor(serviceNames[i]);
                 }

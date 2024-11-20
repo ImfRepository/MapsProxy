@@ -39,6 +39,7 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 services.AddSingleton<IBookingService, BookingService>();
 services.AddSingleton<ILimitingService, LimitingService>();
 services.AddSingleton<IProxyService, ProxyService>();
+services.AddHostedService<BackgroundBookingService>();
 
 services.AddDbContextFactory<AppDbContext>(opt =>
     opt.UseNpgsql(config["POSTGRES_CONNECTION_STRING"]));
