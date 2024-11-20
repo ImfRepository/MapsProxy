@@ -10,7 +10,7 @@ services:
       - ./https:/home/app/https:ro
       #- ./https:/home/app/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
 
   maps-stats-ui:
     environment:
@@ -22,4 +22,14 @@ services:
     volumes:
       - ./https:/home/app/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  maps-stats-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=09610e15-e32d-494b-83a5-4c278a0a336c
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/home/app/https/aspnetapp.pfx
+    volumes:
+      - ./https:/home/app/https:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro

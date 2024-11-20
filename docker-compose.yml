@@ -25,6 +25,19 @@ services:
       - path: ./default.env
         required: true
 
+  maps-stats-api:
+    container_name: maps-stats-api
+    image: ${DOCKER_REGISTRY-}maps-stats-api
+    build:
+      context: .
+      dockerfile: src/StatsApi/Dockerfile
+    ports:
+      - "5002:8080"
+      - "5003:8081"
+    env_file:
+      - path: ./default.env
+        required: true
+
   postgres-server:
     container_name: postgres-server
     image: postgres:latest
