@@ -12,8 +12,6 @@ var services = builder.Services;
 var config = builder.Configuration;
 // Add services to the container.
 
-//services.AddDbContextFactory<AppDbContext>(opt =>
-//    opt.UseNpgsql(config["POSTGRES_CONNECTION_STRING"]));
 services.AddDbContext<AppDbContext>(opt =>
     opt.UseNpgsql(config["POSTGRES_CONNECTION_STRING"]));
 

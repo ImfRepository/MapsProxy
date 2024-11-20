@@ -1,0 +1,31 @@
+﻿@page
+@model WebUI.Pages.ChangeLimitsModel
+@{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    ServiceName
+                </th>
+                <th>
+                    Limits
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var service in Model._services)
+            {
+                <tr>
+                    <td>@service.Name</td>
+                    <td>
+                        <form method="post">
+                            <input type="hidden" name="serviceName" value="@service.Name" />
+                            <input type="number" name="limit" value="@service.MaxUses" />
+                            <input type="submit" value="Set new limit" />
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
