@@ -16,14 +16,17 @@ namespace MapsProxyApi.Services
             _url = config["MAPS_URL"]!;
         }
 
-        public async Task<string> GetAsync(string serviceName, string path, string query)
+        public async Task<HttpResponseMessage> GetAsync(string serviceName, string path, string query)
         {
             var url = $"{_url}{serviceName}/{path}{query}";
 
-            if (await _recordingService.IsAvailableToUse(serviceName))
-                return await _client.GetStringAsync(url);
+            if(serviceName.Contains("C01_Belarus_WGS84"))
+                return await _client.GetAsync(url);
 
-            return $"{serviceName} reached request limit.";
+            if (await _recordingService.IsAvailableToUse(serviceName))
+                return await _client.GetAsync(url);
+
+            throw new Exception($"{serviceName} reached limit.");
 
             // better performance, can request when reach limit
             //var getDataTask = _client.GetStringAsync(url);

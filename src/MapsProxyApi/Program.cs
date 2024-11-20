@@ -4,6 +4,7 @@ using MapsProxyApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using System.IO.Compression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -68,10 +69,26 @@ app.MapGet("/arcservertest/rest/services/{serviceName}/{*path}",
 {
     var query = context.Request.QueryString.ToUriComponent();
 
-    var response = await proxy.GetAsync(serviceName, path, query);
+    var responseMessage = await proxy.GetAsync(serviceName, path, query);
 
-    context.Response.ContentType = "application/json";
-    return response;
+    context.Response.StatusCode = (int)responseMessage.StatusCode;
+    foreach (var header in responseMessage.Headers)
+    {
+        context.Response.Headers[header.Key] = header.Value.ToArray();
+    }
+
+    foreach (var header in responseMessage.Content.Headers)
+    {
+        context.Response.Headers[header.Key] = header.Value.ToArray();
+    }
+
+    // SendAsync removes chunking from the response. This removes the header so it doesn't expect a chunked response.
+    context.Response.Headers.Remove("transfer-encoding");
+
+    using (var responseStream = await responseMessage.Content.ReadAsStreamAsync())
+    {
+        await responseStream.CopyToAsync(context.Response.Body, 81920, context.RequestAborted);
+    }
 })
 .WithOpenApi();
 
