@@ -9,6 +9,8 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebUI", "src\WebUI\WebUI.csproj", "{8B9C93EA-1989-4A5E-8E7F-800B95D08CFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatsApi", "src\StatsApi\StatsApi.csproj", "{132FE58B-3027-47B4-B5B5-8DCC1E28647A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{8B9C93EA-1989-4A5E-8E7F-800B95D08CFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B9C93EA-1989-4A5E-8E7F-800B95D08CFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B9C93EA-1989-4A5E-8E7F-800B95D08CFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{132FE58B-3027-47B4-B5B5-8DCC1E28647A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{132FE58B-3027-47B4-B5B5-8DCC1E28647A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{132FE58B-3027-47B4-B5B5-8DCC1E28647A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{132FE58B-3027-47B4-B5B5-8DCC1E28647A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
