@@ -1,9 +1,23 @@
+using Microsoft.EntityFrameworkCore;
+using StatsApi.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var services = builder.Services;
+var config = builder.Configuration;
+// Add services to the container.
+
+//services.AddDbContextFactory<AppDbContext>(opt =>
+//    opt.UseNpgsql(config["POSTGRES_CONNECTION_STRING"]));
+services.AddDbContext<AppDbContext>(opt =>
+    opt.UseNpgsql(config["POSTGRES_CONNECTION_STRING"]));
+
+services.AddTransient<StatsService>();
 
 var app = builder.Build();
 
@@ -14,31 +28,29 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
-var summaries = new[]
+app.MapGet("/api/limits", async (StatsService statsService) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    return await statsService.GetAllLimits();
 })
-.WithName("GetWeatherForecast")
+.WithOpenApi();
+
+app.MapPost("/api/limits/{serviceName}", async (StatsService statsService,
+    string serviceName,
+    int limit) =>
+{
+    if (await statsService.SetLimitFor(serviceName, limit))
+        return Results.Ok();
+
+    return Results.BadRequest();
+})
+.WithOpenApi();
+
+app.MapPost("/api/limits/resetall", async (StatsService statsService) =>
+{
+    await statsService.ResetAllLimits();
+})
 .WithOpenApi();
 
 app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
