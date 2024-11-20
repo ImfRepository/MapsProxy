@@ -37,7 +37,7 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 });
 
 services.AddSingleton<IBookingService, BookingService>();
-services.AddSingleton<IRecordingService, RecordingService>();
+services.AddSingleton<ILimitingService, LimitingService>();
 services.AddSingleton<IProxyService, ProxyService>();
 
 services.AddDbContextFactory<AppDbContext>(opt =>
@@ -59,7 +59,7 @@ app.UseCors("allowFront");
 
 app.UseResponseCompression();
 
-app.MapGet("/api/testservices/{serviceName}/{*path}", 
+app.MapGet("/arcservertest/rest/services/{serviceName}/{*path}", 
     async ([FromServices] IProxyService proxy, 
     string serviceName, 
     string path,
@@ -74,11 +74,11 @@ app.MapGet("/api/testservices/{serviceName}/{*path}",
 })
 .WithOpenApi();
 
-app.MapGet("/api/stats/{serviceName}",
-    async([FromServices] IRecordingService service,
+app.MapGet("/api/stats/available/{serviceName}",
+    async([FromServices] ILimitingService service,
     string serviceName) =>
 {   
-    var response = await service.GetAvailableRequestAmountTo(serviceName);
+    var response = await service.GetAvailableRequestsTo(serviceName);
     return response;  
 })
 .WithOpenApi();

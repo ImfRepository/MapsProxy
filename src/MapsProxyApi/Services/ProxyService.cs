@@ -4,12 +4,12 @@ namespace MapsProxyApi.Services
 {
     public class ProxyService : IProxyService
     {
-        private readonly IRecordingService _recordingService;
+        private readonly ILimitingService _recordingService;
         private readonly string _url;
 
         private static HttpClient _client = _client = new HttpClient();
 
-        public ProxyService(IRecordingService recordingService,
+        public ProxyService(ILimitingService recordingService,
             IConfiguration config)
         {
             _recordingService = recordingService;
@@ -20,11 +20,12 @@ namespace MapsProxyApi.Services
         {
             var url = $"{_url}{serviceName}/{path}{query}";
 
-            if (await _recordingService.TryRecordTheRequestTo(serviceName))
+            if (await _recordingService.IsAvailableToUse(serviceName))
                 return await _client.GetStringAsync(url);
 
             return $"{serviceName} reached request limit.";
 
+            // better performance, can request when reach limit
             //var getDataTask = _client.GetStringAsync(url);
             //var incCounterTask = _recordingService.TryRecordTheRequestTo(serviceName);
 
