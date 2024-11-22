@@ -29,6 +29,9 @@ namespace MapsProxyApi.Services
 
         public async Task<bool> IsAvailableToUse(string serviceName)
         {
+            if(serviceName.Contains("C01_Belarus_WGS84"))
+                return true;
+
             if (0 >= await GetOrInit(serviceName))
                 return false;
 
