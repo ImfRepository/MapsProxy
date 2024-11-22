@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography.X509Certificates;
-using WebUI.Data;
 using WebUI.Domain.Entities;
 using WebUI.Services;
 

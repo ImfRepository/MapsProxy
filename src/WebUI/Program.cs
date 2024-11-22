@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using WebUI.Data;
 using WebUI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,11 +6,6 @@ var config = builder.Configuration;
 // Add services to the container.
 services.AddRazorPages();
 services.AddTransient<StatsService>();
-
-services.AddDbContextFactory<AppDbContext>(opt =>
-    opt.UseNpgsql(config["POSTGRES_CONNECTION_STRING"]));
-services.AddDbContext<AppDbContext>(opt =>
-    opt.UseNpgsql(config["POSTGRES_CONNECTION_STRING"]));
 
 var app = builder.Build();
 
