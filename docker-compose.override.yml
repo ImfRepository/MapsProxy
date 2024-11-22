@@ -8,7 +8,6 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/home/app/https/aspnetapp.pfx
     volumes:
       - ./https:/home/app/https:ro
-      #- ./https:/home/app/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
 
 
