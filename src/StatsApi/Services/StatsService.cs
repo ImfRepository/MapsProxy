@@ -28,11 +28,12 @@ public class StatsService
             .AsNoTracking()
             .ToListAsync();
 
+        var url = $"http://maps-proxy-api:8080/api/stats/available/";
+        var notUsed = await _httpClient.GetFromJsonAsync<Dictionary<string, int>>(url);
+
         foreach (var service in services)
         {
-            var url = $"http://maps-proxy-api:8080/api/stats/available/{service.Name}";
-            var notUsed = await _httpClient.GetFromJsonAsync<int>(url);
-            service.UsedTimes -= notUsed;
+            service.UsedTimes -= notUsed![service.Name];
 
             if (service.UsedTimes < 0)
                 service.UsedTimes = 0;
