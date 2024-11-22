@@ -2,6 +2,6 @@
 {
     public interface IProxyService
     {
-        public Task<HttpResponseMessage> GetAsync(string serviceName, string path, string query);
+        public Task<HttpResponseMessage> SendAsync(HttpContext context, string serviceName, string path, string query);
     }
 }

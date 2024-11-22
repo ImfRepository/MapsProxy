@@ -1,4 +1,6 @@
-﻿namespace MapsProxyApi.Extensions
+﻿using System;
+
+namespace MapsProxyApi.Extensions
 {
     public static class HttpContextExtension
     {
@@ -22,6 +24,36 @@
             {
                 await responseStream.CopyToAsync(context.Response.Body, 81920, context.RequestAborted);
             }
+        }
+
+        public static HttpRequestMessage GetRequestMessageAsync(this HttpContext context, Uri uri)
+        {
+            var request = context.Request;
+
+            var requestMessage = new HttpRequestMessage();
+            var requestMethod = request.Method;
+            if (!HttpMethods.IsGet(requestMethod) &&
+                !HttpMethods.IsHead(requestMethod) &&
+                !HttpMethods.IsDelete(requestMethod) &&
+                !HttpMethods.IsTrace(requestMethod))
+            {
+                var streamContent = new StreamContent(request.Body);
+                requestMessage.Content = streamContent;
+            }
+
+            foreach (var header in request.Headers)
+            {
+                if (!requestMessage.Headers.TryAddWithoutValidation(header.Key, header.Value.ToArray()) && requestMessage.Content != null)
+                {
+                    requestMessage.Content?.Headers.TryAddWithoutValidation(header.Key, header.Value.ToArray());
+                }
+            }
+
+            requestMessage.Headers.Host = uri.Authority;
+            requestMessage.RequestUri = uri;
+            requestMessage.Method = new HttpMethod(request.Method);
+
+            return requestMessage;
         }
     }
 }

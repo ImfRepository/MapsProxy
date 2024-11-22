@@ -62,15 +62,15 @@ app.UseCors("allowFront");
 
 app.UseResponseCompression();
 
-app.MapGet("/arcservertest/rest/services/{serviceName}/{*path}", 
-    async ([FromServices] IProxyService proxy, 
-    string serviceName, 
+app.Map("/arcservertest/rest/services/{serviceName}/{*path}",
+    async ([FromServices] IProxyService proxy,
+    string serviceName,
     string path,
     HttpContext context) =>
 {
     var query = context.Request.QueryString.ToUriComponent();
 
-    var responseMessage = await proxy.GetAsync(serviceName, path, query);
+    var responseMessage = await proxy.SendAsync(context, serviceName, path, query);
 
     await context.CopyResponseFromAsync(responseMessage);
 })

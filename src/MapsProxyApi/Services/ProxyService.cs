@@ -1,4 +1,7 @@
-﻿using MapsProxyApi.Interfaces;
+﻿using MapsProxyApi.Extensions;
+using MapsProxyApi.Interfaces;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.IO;
 
 namespace MapsProxyApi.Services
 {
@@ -16,19 +19,18 @@ namespace MapsProxyApi.Services
             _url = config["MAPS_URL"]!;
         }
 
-        public async Task<HttpResponseMessage> GetAsync(string serviceName, string path, string query)
+        public async Task<HttpResponseMessage> SendAsync(HttpContext context, string serviceName, string path, string query)
         {
-            var url = $"{_url}{serviceName}/{path}{query}";
+            var uri = new Uri($"{_url}{serviceName}/{path}{query}");
 
-            if(serviceName.Contains("C01_Belarus_WGS84"))
-                return await _client.GetAsync(url);
+            var request = context.GetRequestMessageAsync(uri);
 
             if (await _recordingService.IsAvailableToUse(serviceName))
-                return await _client.GetAsync(url);
+                return await _client.SendAsync(request);
 
-            throw new Exception($"{serviceName} reached limit.");
+            return new HttpResponseMessage(System.Net.HttpStatusCode.NoContent);
 
-            // better performance, can request when reach limit
+            // better performance, can request when reached limit
             //var getDataTask = _client.GetStringAsync(url);
             //var incCounterTask = _recordingService.TryRecordTheRequestTo(serviceName);
 
