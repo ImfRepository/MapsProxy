@@ -15,6 +15,19 @@ namespace MapsProxyApi.Services
             Init().Wait();
         }
 
+        public async Task<Dictionary<string, int>> GetAllAvailableRequests()
+        {
+            var result = new Dictionary<string, int>();
+            var serviceNames = await _bookingService.GetAllServiceNames();
+
+            foreach (var serviceName in serviceNames )
+            {
+                result.Add(serviceName, _availibleAmounts[serviceName]);
+            }
+
+            return result;
+        }
+
         public Task<Dictionary<string, int>> GetAvailableRequests()
         {
             return Task.FromResult(_availibleAmounts
