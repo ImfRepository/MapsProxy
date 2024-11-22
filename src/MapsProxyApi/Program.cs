@@ -5,7 +5,6 @@ using MapsProxyApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
 using System.IO.Compression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -77,12 +76,11 @@ app.Map("/arcservertest/rest/services/{serviceName}/{*path}",
 .WithOpenApi();
 
 app.MapGet("/api/stats/available/{serviceName}",
-    async([FromServices] ILimitingService service,
-    string serviceName) =>
-{   
-    var response = await service.GetAvailableRequestsTo(serviceName);
-    return response;  
-})
+    async([FromServices] ILimitingService service, string serviceName) => await service.GetAvailableRequestsTo(serviceName))
+.WithOpenApi();
+
+app.MapGet("/api/stats/available/",
+    async ([FromServices] ILimitingService service) => await service.GetAllAvailableRequests())
 .WithOpenApi();
 
 app.Run();
